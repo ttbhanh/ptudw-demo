@@ -1,0 +1,32 @@
+<div class="card-body p-4 p-sm-5">
+    <h1 class="card-title text-center mb-5 fs-5">Demo Login/Register with Passport</h1>
+    {{#if isLoggedIn }}
+    <div class="d-grid mb-2">
+        <a href="/logout" class="btn btn-lg btn-danger btn-login fw-bold text-uppercase" type="submit">
+            Logout
+        </a>
+    </div>
+    {{else}}
+    <div class="d-grid mb-2">
+        <a href="/login" class="btn btn-lg btn-primary btn-login fw-bold text-uppercase" type="submit">
+            Login
+        </a>
+    </div>
+
+    <div class="d-grid mb-2">
+        <a href="/register" class="btn btn-lg btn-secondary btn-login fw-bold text-uppercase" type="submit">
+            Register
+        </a>
+    </div>
+    {{/if}}
+    <div class="d-grid mb-2">
+        <a href="/profile" class="btn btn-lg btn-warning btn-login fw-bold text-uppercase" type="submit">
+            User Profile
+        </a>
+    </div>
+    <div class="d-grid mb-2">
+        <a href="/user" class="btn btn-lg btn-success btn-login fw-bold text-uppercase" type="submit">
+            User Account
+        </a>
+    </div>
+</div>

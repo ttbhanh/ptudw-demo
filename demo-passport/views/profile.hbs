@@ -1,0 +1,20 @@
+<div class="card-body p-4 p-sm-5">
+    <h1 class="card-title text-center mb-5 fs-5">Welcome {{user.firstName}} {{user.lastName}}</h1>
+    <div class="text-center mb-4">
+        You logged in using <span class="fw-bold">{{user.email}}</span> <span
+            class="text-uppercase fw-bold">{{user.type}}</span>
+        account.
+    </div>
+    <div class="d-grid mb-2">
+        <a href="/user" class="btn btn-lg btn-success btn-login fw-bold text-uppercase" type="submit">
+            User Account
+        </a>
+    </div>
+
+    <div class="d-grid mb-2">
+        <a href="/logout" class="btn btn-lg btn-danger btn-login fw-bold text-uppercase" type="submit">
+            Logout
+        </a>
+    </div>
+
+</div>

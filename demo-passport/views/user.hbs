@@ -1,0 +1,60 @@
+<div class="card-body p-4 p-sm-5">
+    <h1 class="card-title text-center mb-5 fs-5">User Account</h1>
+    {{#if isLocal}}
+    <form action="/user" method="POST">
+        <div class="form-floating mb-3">
+            {{#if message}} <div class="alert alert-success">{{{message}}}</div>{{/if}}
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="password" class="form-control" name="oldPassword" id="floatingOldPassword"
+                placeholder="Old Password" required>
+            <label for="floatingOldPassword">Old Password</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password"
+                required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                title="Password must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters"
+                onkeyup="checkPasswordConfirm('formRegister')">
+            <label for="floatingPassword">Password</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="password" name="confirmPassword" required class="form-control" id="floatingPasswordConfirm"
+                placeholder="Confirm Password" onkeyup="checkPasswordConfirm()">
+            <label for="floatingPasswordConfirm">Confirm Password</label>
+        </div>
+
+        <div class="d-grid mb-2">
+            <button class="btn btn-lg btn-primary btn-login fw-bold text-uppercase" type="submit">Change
+                Password</button>
+        </div>
+    </form>
+    {{else}}
+    <div class="text-center mb-4">
+        You logged in using <span class="fw-bold">{{user.email}}</span> <span
+            class="text-uppercase fw-bold">{{user.type}}</span>
+        account. Please using your {{user.type}} to change your password.
+    </div>
+    {{/if}}
+
+    <hr class="my-4">
+
+    <div class="d-grid mb-2">
+        <a href="/profile" class="btn btn-lg btn-warning btn-login fw-bold text-uppercase" type="submit">
+            User Profile
+        </a>
+    </div>
+
+    <div class="d-grid mb-2">
+        <a href="/logout" class="btn btn-lg btn-danger btn-login fw-bold text-uppercase" type="submit">
+            <i class="fa-solid fa-arrow-up-left-from-circle"></i> Logout
+        </a>
+    </div>
+
+
+
+</div>
+
+<script src="/script.js"></script>

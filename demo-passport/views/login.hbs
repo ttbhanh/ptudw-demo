@@ -1,0 +1,52 @@
+<div class="card-body p-4 p-sm-5">
+    <h1 class="card-title text-center mb-5 fs-5">Login</h1>
+    <form action="/login" method="POST">
+        <input type="hidden" name="reqUrl" value="{{reqUrl}}">
+        <input type="hidden" name="keepLoggedIn" value="">
+        <div class="form-floating mb-3">
+            {{#if message}} <div class="alert alert-warning">{{{message}}}</div>{{/if}}
+        </div>
+        <div class="form-floating mb-3">
+            <input type="email" name="email" class="form-control" id="floatingInputEmail" placeholder="name@example.com"
+                required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+            <label for="floatingInputEmail">Email address</label>
+        </div>
+
+        <hr>
+
+        <div class="form-floating mb-3">
+            <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password"
+                required>
+            <label for="floatingPassword">Password</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="keepLoggedIn" value="true" name="keepLoggedIn">
+                <label class="form-check-label" for="keepLoggedIn">Keep Log In</label>
+            </div>
+        </div>
+
+        <div class="d-grid mb-2">
+            <button class="btn btn-lg btn-primary btn-login fw-bold text-uppercase" type="submit">Login</button>
+        </div>
+
+        <a class="d-block text-center mt-2 small" href="/register">Don't have an account? Sign
+            Up</a>
+
+        <hr class="my-4">
+
+        <div class="d-grid mb-2">
+            <a href="/auth/google" class="btn btn-lg btn-google btn-login fw-bold text-uppercase" type="submit">
+                Login with Google
+            </a>
+        </div>
+
+        <div class="d-grid">
+            <a href="/auth/facebook" class="btn btn-lg btn-facebook btn-login fw-bold text-uppercase" type="submit">
+                Login with Facebook
+            </a>
+        </div>
+
+    </form>
+</div>
