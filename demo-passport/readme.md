@@ -16,7 +16,7 @@ Demo Login/Register su dung NodeJS, ExpressJS, PostgreSQL
 
 2. Cai dat ung dung
 - Download source code va Giai nen
-Github Link:
+Github Link: https://github.com/ttbhanh/ptudw-demo/tree/main/demo-passport
 
 - Mo thu muc da duoc giai nen trong VS.code
 
