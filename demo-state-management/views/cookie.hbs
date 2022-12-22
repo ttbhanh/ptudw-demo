@@ -1,0 +1,66 @@
+<h1 class="text-primary text-center"><a href="/">Demo Cookie</a></h1>
+
+<div class="well">
+  <h2>Server</h2>
+  <a href="/createCookie" class="btn btn-block btn-primary">Create Cookie</a>
+  <a href="/clearCookie" class="btn btn-block btn-danger">Clear Cookie</a>
+</div>
+<div class="well">
+  <h2>Client</h2>
+  <input type="button"  class="btn btn-block btn-primary" name="createCookie" value="Create Cookie"
+  onclick="createCookie()">
+
+  <input type="button"  class="btn btn-block btn-danger" name="clearCookie" value="Clear Cookie"
+  onclick="clearCookie()">
+</div>
+<div class="well">
+  <a href="/view" class="btn btn-block">View Stored Variables</a>
+</div>
+
+<script>
+function createCookie(){
+  user = prompt("Please enter your name:", "");
+  if (user != "" && user != null) {
+      setCookie("username", user, 365);
+  }
+}
+
+function clearCookie(){
+  setCookie("username", '', -1);
+  alert('cookie is clear!')
+}
+
+function setCookie(cname, cvalue, exdays) {
+  var d = new Date();
+  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+  var expires = "expires="+d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var ca = document.cookie.split(';');
+  for(var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+      }
+  }
+  return "";
+}
+
+function checkCookie() {
+  var user = getCookie("username");
+  if (user != "") {
+      alert("Welcome again " + user);
+  } else {
+      user = prompt("Please enter your name:", "");
+      if (user != "" && user != null) {
+          setCookie("username", user, 365);
+      }
+  }
+}
+</script>

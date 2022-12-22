@@ -1,0 +1,59 @@
+<h1 class="text-primary text-center"><a href="/">Demo Web Storage</a></h1>
+
+<div class="well">
+  <h2>Local Storage</h2>
+  <button type="button" class="btn btn-primary btn-block"
+  onclick="createLocalStorage()">
+    Create localStorage Variable
+  </button>
+
+  <button type="button" class="btn btn-danger btn-block"
+  onclick="removeLocalStorage()">
+    Remove localStorage Variable
+  </button>
+</div>
+
+<div class="well">
+  <h2>Session storage</h2>
+  <button type="button" class="btn btn-primary btn-block"
+  onclick="createSessionStorage()">
+    Create sessionStorage Variable
+  </button>
+  <button type="button" class="btn btn-danger btn-block"
+  onclick="removeSessionStorage()">
+    Remove sessionStorage Variable
+  </button>
+</div>
+
+<div class="well">
+  <a href="/view" class="btn btn-block btn-info">View Stored Variables</a>
+</div>
+
+<span id="result"></span>
+<script language='javascript'>
+  function createLocalStorage() {
+    var variable = prompt("Please enter a value:", "");
+    if (variable != "" && variable != null) {
+      localStorage.setItem("variable", variable);
+      alert('local variable created!');
+    }
+  }
+
+  function removeLocalStorage() {
+    localStorage.removeItem("variable");
+    alert('local variable removed!');
+  }
+
+  function createSessionStorage() {
+    var variable = prompt("Please enter a value:", "");
+    if (variable != "" && variable != null) {
+      sessionStorage.setItem("variable", variable);
+      alert('session variable created!');
+    }
+  }
+
+  function removeSessionStorage() {
+    sessionStorage.removeItem("variable");
+    alert('session variable removed!');
+  }
+</script>

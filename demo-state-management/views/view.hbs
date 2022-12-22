@@ -1,0 +1,21 @@
+<h1 class="text-primary text-center"><a href="/">Show Stored Data</a></h1>
+
+<div class="well">
+  <h2>localStorage</h2>
+  <span id='localVariable'></span>
+</div>
+<div class="well">
+  <h2>sessionStorage</h2>
+  <span id='sessionVariable'></span>
+</div>
+
+<div class="well">
+  <h2>cookies</h2>
+  <span id='cookieVariable'></span>
+</div>
+
+<script language='javascript'>
+  document.getElementById('localVariable').innerHTML = localStorage.variable;
+  document.getElementById('sessionVariable').innerHTML = sessionStorage.variable;
+  document.getElementById('cookieVariable').innerHTML = document.cookie;
+</script>
