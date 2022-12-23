@@ -4,9 +4,12 @@ const port = process.env.PORT || 2000;
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = "secret key to hash token";
 
-const createJWT = (email, expiresIn = "24h") => {
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+const createJWT = (info, expiresIn = "24h") => {
     return jwt.sign(
-        { email },
+        { info },
         SECRET_KEY,
         { expiresIn }
     );
@@ -24,15 +27,50 @@ const verifyJWT = (token) => {
 app.get('/', (req, res) => {
     res.send('Hello')
 })
-app.get('/creat_jwt', (req, res) => {
-    let expiresIn = "30s";
-    let token = createJWT(req.query.email, expiresIn);
-    res.json({ token });
+
+app.post('/get_token', (req, res) => {
+    let username = req.body.username;
+    let password = req.body.password;
+
+    if (username == "admin" && password == "123") {
+        let expiresIn = "1m";
+        let token = createJWT(username, expiresIn);
+        return res.json({ token });
+    }
+    return res.json({});
 })
 
-app.get('/verify_jwt', (req, res) => {
-    let result = verifyJWT(req.query.token);
-    res.send(result);
+app.get('/verify_token', (req, res) => {
+    let authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+        let token = authHeader.substring(7, authHeader.length);
+        let result = verifyJWT(token);
+        return res.send({ isValid: result });
+    }
+    return res.json({
+        message: 'Bad Request'
+    });
+})
+
+app.get('/secured_data', (req, res) => {
+    let authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+        let token = authHeader.substring(7, authHeader.length);
+        if (verifyJWT(token)) {
+            return res.json({
+                message: 'You can see this message because you have a valid JWT!'
+            })
+        }
+    }
+    return res.json({
+        message: 'Unauthorized Access'
+    });
+})
+
+app.get('/data', (req, res) => {
+    res.json({
+        message: 'Everybody can get this data'
+    })
 })
 
 app.listen(port, () => {
