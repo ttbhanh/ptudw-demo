@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo JS</title>
+    <script src="script.js" defer>
+        // window.alert('Hello');
+    </script>
+</head>
+
+<body>
+    <h1>Demo JS</h1>
+
+    <script>
+        // document.querySelector('h1').innerHTML = 'body';
+    </script>
+    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iure quo perferendis numquam repellat! Iusto cum
+        incidunt repellendus consequatur tenetur accusantium veritatis ratione? Vero, accusantium quia maiores qui rerum
+        incidunt quis?</p>
+    <script>
+        // document.querySelector('h1').innerHTML = 'footer';
+    </script>
+    <script type="module">
+        import a from "./module-a.mjs";
+        console.log(a);
+        a.x = 2;
+    </script>
+    <script type="module">
+        import a from './module-a.mjs';
+        console.log(a);
+        setTimeout(() => console.log('module', document.querySelector('button')), 1000);
+    </script>
+    <button>Test</button>
+    <script>
+        setTimeout(() => console.log('footer', document.querySelector('button')), 1000);
+    </script>
+</body>
+
+</html>

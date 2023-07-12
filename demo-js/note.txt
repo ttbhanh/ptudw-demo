@@ -1,0 +1,19 @@
+JS
+1- Khai bao bien: var, let, const
+2- Khai bao ham: function, arrow function, arguments, default arguments 
+3- Ham anonymous, goi ham
+4- Event loop
+5- Callback, callback hell
+6- Promise
+7- Async/await
+8- Promise, async/await & event loop
+9- setTimeout, setImmediate, process.nextTick
+10- string "" '', template string ``, string methods (length, slice, splice, split...)
+11- array methods: map, forEach, reduce, sort, concat, join, push, shift, pop, unshift, indexOf, includes
+12- object: spread, deconstruct operator, clone
+13- this
+14- OOP object prototype
+15- OOP class
+
+
+

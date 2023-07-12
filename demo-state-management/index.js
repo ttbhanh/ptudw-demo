@@ -100,9 +100,10 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
+  console.error(err);
   res.render('error', { message: 'Internal Server Error!' });
 });
 
-app.listen(4000, function () {
-  console.log('server is listening on port 4000');
+app.listen(3000, function () {
+  console.log('server is listening on port 3000');
 });
