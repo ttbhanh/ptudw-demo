@@ -1,0 +1,45 @@
+{{#if message}}
+<div class="container alert alert-warning">
+    {{message}}
+</div>
+{{/if}}
+<div class="container my-3">
+    <div class="row">
+        <div class="col-md-3">
+            <!-- Hover added -->
+            <div class="list-group">
+                {{#each categories}}
+                <a href="/products?category={{id}}" class="list-group-item list-group-item-action">{{name}}</a>
+                {{/each}}
+            </div>
+        </div>
+        <div class="col-md-9">
+            <!-- Hover added -->
+
+            <section style="background-color: #eee;">
+                <div class="text-center container py-3">
+                    <div class="row">
+                        {{#each products}}
+                        <div class="col-lg-4 col-md-12 mb-4">
+                            <div class="card h-100">
+                                <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
+                                    data-mdb-ripple-color="light">
+                                    <a href="/products/{{id}}">
+                                        <img src="{{imagePath}}" class="w-100" />
+                                    </a>
+                                </div>
+                                <div class="card-body">
+                                    <a href="/products/{{id}}" class="text-reset">
+                                        <h5 class="card-title mb-3">{{name}}</h5>
+                                    </a>
+                                    <h6 class="mb-3">${{price}}</h6>
+                                </div>
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

