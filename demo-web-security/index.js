@@ -10,7 +10,7 @@ const models = require("./models");
 const sequelize = require("sequelize");
 const Op = sequelize.Op;
 const csurf = require("csurf");
-const csrfProtection = csurf({ cookie: true });
+const csrfProtection = csurf({ cookie: { httpOnly: true } });
 
 app.use(express.static(__dirname + "/public"));
 
