@@ -11,6 +11,7 @@ const sequelize = require("sequelize");
 const Op = sequelize.Op;
 const csurf = require("csurf");
 const csrfProtection = csurf({ cookie: { httpOnly: true } });
+const { query, validationResult } = require("express-validator");
 
 app.use(express.static(__dirname + "/public"));
 
@@ -128,6 +129,25 @@ app.post("/products", checkLogin, async (req, res) => {
   res.redirect(`/products/${req.body.id}`);
 });
 
+app.delete("/reviews", async (req, res) => {
+  if (!req.session.isLoggedIn || !req.session.isAdmin) {
+    console.log(
+      "Invalid request: You don't have permission to delete a review."
+    );
+    return res.send(
+      "Invalid request: You don't have permission to delete a review."
+    );
+  }
+  try {
+    console.log("Review deleted!");
+    await models.Review.destroy({ where: { id: req.body.id } });
+    return res.send("Review deleted!");
+  } catch (error) {
+    console.error(error);
+    return res.send("Can not delete!");
+  }
+});
+
 app.post("/login", async (req, res) => {
   let { username, password, remember } = req.body;
   const { QueryTypes } = require("sequelize");
@@ -146,7 +166,7 @@ app.post("/login", async (req, res) => {
         });
         res.cookie("password", password, {
           maxAge: 60 * 60 * 24 * 1000,
-          httpOnly: true,
+          httpOnly: false,
         });
       }
       req.session.isLoggedIn = true;
@@ -181,11 +201,15 @@ app.get("/sync", async (req, res) => {
   models.sequelize.sync().then(() => res.send("ok"));
 });
 
-app.get("/test", async (req, res) => {
-  let strSQL = `INSERT INTO public."Reviews" ("stars", "review", "createdAt", "updatedAt") VALUES(5, '${req.query.hack}', Now(), Now())`;
-  const results = await models.sequelize.query(strSQL);
-  res.json(results);
-});
+app.get(
+  "/test",
+  query("email").isEmail().withMessage("Invalid email address"),
+  query("keyword").escape(),
+  (req, res) => {
+    let errors = validationResult(req);
+    res.json({ ...errors, keyword: req.query.keyword });
+  }
+);
 
 app.listen(port, () => {
   console.log(`server is listening on port ${port}`);
