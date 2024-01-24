@@ -1,0 +1,19 @@
+{
+  "dialect": "postgres",
+  "host": "localhost",
+  "port": 5433,
+  "username": "postgres",
+  "password": "postgres",
+  "database": "blogDB",
+  "additional": {
+    "timestamps": false
+  },
+  "skipTables": [],
+  "caseModel": "p",
+  "caseProp": "c",
+  "caseFile": "c",
+  "noAllias": true,
+  "singularize": true,
+  "directory": "./models-auto",
+  "lang": "js"
+}

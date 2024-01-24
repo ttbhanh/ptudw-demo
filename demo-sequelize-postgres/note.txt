@@ -1,0 +1,32 @@
+# Init
+$ npm init -y
+$ pnpm i pg pg-hstore sequelize
+
+# Code First
+1. Commands to create models 
+$ npm i -g sequelize-cli
+
+$ sequelize init
+
+$ sequelize model:create --name ModelName --attributes attributeName1:string,attributeName2:text
+
+2. Script to create tables in database from models files
+$ node create-tables.js
+
+Note: Edit ./config/config.json for database connection string
+
+3. Command to create seeder data
+$ sequelize seed:generate --name SeederName
+
+$ sequelize db:seed:all
+
+# Model First
+
+1. Command to generate models automatically from database
+
+$ node node_modules/sequelize-auto/bin/sequelize-auto --config ./sequelize-auto-config.json 
+
+2. Script to generate models automatically from database
+$ node create-models.js
+
+Note: Edit ./sequelize-auto-config.js for database connection string
