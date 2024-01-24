@@ -1,8 +1,8 @@
-# Init
+# Code First
+0. Init
 $ npm init -y
 $ pnpm i pg pg-hstore sequelize
 
-# Code First
 1. Commands to create models 
 $ npm i -g sequelize-cli
 
@@ -21,6 +21,9 @@ $ sequelize seed:generate --name SeederName
 $ sequelize db:seed:all
 
 # Model First
+0. Init
+$ npm init -y
+$ pnpm i pg pg-hstore sequelize-auto
 
 1. Command to generate models automatically from database
 
