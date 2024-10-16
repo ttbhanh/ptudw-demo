@@ -1,0 +1,96 @@
+State management
+
+Quan ly trang thai cua 1 hoac n users, trong 1 hoac n pages
+
+* Vi du:
+1. Pagination: 1 user, 1 trang
+querystring
+
+2. Website ban hang truc tuyen (user chua dang nhap): n users, n pages
+- Trang chu: hien thi danh sach category, danh sach product
+- Trang chi tiet: danh sach category, thong tin cua san pham
+=> database
+
+3. Chuc nang dang nhap (trang thai dang nhap): 1 user, n page
+- Trang dang nhap: dang nhap that bai/dang nhap thanh cong
+- Trang My Profile 
+- Trang thanh toan
+=> session
+? cookie: ko bao mat
+
+4. Chuc nang luu mat khau (username, password): 1 user, 1 page/n pages
+- Trang Login
+? session
+* cookie: luu mat khau da ma hoa, httpOnly
+localStorage
+sessionStorage
+
+5. Chuc nang gio hang (user chua dang nhap): 1 user, n page
+- Trang chu: hien so so luong san pham co trong gio hang
+- Trang chi tiet: them san pham vao gio hang
+- Trang gio hang: them/xoa/sua san pham trong gio hang
+Database
+* session
+cookie
+localStorage
+sessionStorage
+
+6. Luu thong tin giao hang: 1 user, 1 page
+Database
+session
+* cookie
+* localStorage
+sessionStorage
+
+
+* Vi tri luu tru
++ Server
+- Database: n users, n pages
+Thoi gian ton tai cho toi khi server xoa
+
+- Session: vung nho duoc cap rieng cho moi user, phan biet dua vao session id (se duoc gui qua lai giua client-server thong qua cookie), 1 user, n pages
+Thoi gian ton tai se phu thuoc vao thoi gian ton tai cua cookie
+req.session.key = value
+req.session.key
+res.session.destroy(callback)
+
++ Client (Browser)
+- Cookie: co che hoat dong la tu dong duoc browser gui qua lai giua client-server
+Thoi gian ton tai cua cookie duoc quy dinh boi maxAge/expire, hoac la user tu xoa tren trinh duyet
+Co the duoc truy xuat boi Server JS hoac Client JS
+Server JS
+res.cookie(key, value, options)
+req.cookies, req.signedCookies
+res.clearCookie(key)
+
+Client JS (chi truy xuat duoc httpOnly=false)
+document.cookie
+
+- localStorage: thoi gian ton tai cho toi khi user xoa
+Chi co the duoc truy xuat thong qua Client JS
+localStorage.setItem(key, value)
+localStorage.getItem(key)
+localStorage.remove()
+
+- sessionStorage: thoi gian ton tai cho toi khi user tat trinh duyet
+Chi co the duoc truy xuat thong qua Client JS
+sessionStorage.setItem(key, value)
+sessionStorage.getItem(key)
+sessionStorage.remove()
+
+Link demo:
+https://github.com/ttbhanh/ptudw-demo
+
+* Review
++ Web Tinh: DOM JS, GK
++ Web Dong: Express-Handlebars, Sequelize, CRUD
+
++ Mo hinh hoat dong ung dung web
+- Client-based
+
+- Server-based: Express-Handlebars, Sequelize
+Client gui URL => Server render HTML => Client Display
+
+- Client-Server: CRUD
+Server Web API -> JSON
+Client: Render HTML (DOM)

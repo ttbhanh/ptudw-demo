@@ -6,6 +6,7 @@ const handebars = require("express-handlebars");
 const port = process.env.PORT || 3000;
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const models = require("./models");
 const sequelize = require("sequelize");
 const Op = sequelize.Op;
@@ -15,6 +16,7 @@ const { query, validationResult } = require("express-validator");
 
 app.use(express.static(__dirname + "/public"));
 
+// cấu hình view template
 app.engine(
   "hbs",
   handebars.engine({
@@ -29,9 +31,33 @@ app.engine(
 );
 app.set("view engine", "hbs");
 
+// cấu hình cho phép truy cập dữ liệu gửi qua req.body
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Cấu hình CORS
+// const allowedOrigins = ["http://localhost:3000"]; // Thay bằng domain của bạn
+
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       // Bỏ qua kiểm tra nếu không có origin (ví dụ: request từ server)
+//       if (!origin) return callback(null, true);
+//       if (allowedOrigins.indexOf(origin) === -1) {
+//         const msg =
+//           "The CORS policy for this site does not allow access from the specified Origin.";
+//         return callback(new Error(msg), false);
+//       }
+//       return callback(null, true);
+//     },
+//     credentials: true, // Cho phép gửi cookie
+//   })
+// );
+
+// Cấu hình sử dụng Cookie
+app.use(cookieParser("Secret to encrypt signed cookies"));
+
+// Cấu hình sử dụng session
 app.use(
   session({
     secret: "S3cret",
@@ -43,8 +69,8 @@ app.use(
     },
   })
 );
-app.use(cookieParser());
 
+// middleware đọc username và password được lưu trong cookies và gửi lên view
 app.use((req, res, next) => {
   res.locals.username = req.cookies.username;
   res.locals.password = req.cookies.password;
@@ -55,6 +81,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// homepage
 app.get("/", async (req, res) => {
   let options = {
     attributes: ["id", "name", "price", "imagePath"],
@@ -68,6 +95,7 @@ app.get("/", async (req, res) => {
   res.render("index", { keyword: req.query.keyword });
 });
 
+// products page
 app.get("/products", async (req, res) => {
   let categoryId = req.query.category ? req.query.category : 0;
   let categories = await models.Category.findAll();
@@ -87,6 +115,7 @@ app.get("/products", async (req, res) => {
   }
 });
 
+// product's details page
 app.get("/products/:id", csrfProtection, async (req, res) => {
   res.locals.product = await models.Product.findOne({
     attributes: ["id", "name", "price", "oldPrice", "description", "imagePath"],
@@ -97,27 +126,25 @@ app.get("/products/:id", csrfProtection, async (req, res) => {
       },
     ],
   });
-  if (req.session.isAdmin) {
-    res.locals.csrfToken = req.csrfToken();
-  }
+  res.locals.csrfToken = req.csrfToken();
+
   res.render("details");
 });
 
+// middleware kiểm tra trạng thái đăng nhập
 function checkLogin(req, res, next) {
   if (!req.session.isLoggedIn) {
     console.log(
-      "Invalid request: You don't have permission to post a review. Please login to continue!"
+      "Invalid request: You don't have permission to make this request. Please login to continue!"
     );
     return res.redirect(`/products/${req.body.id}`);
-  }
-
-  if (req.session.isAdmin) {
-    return csrfProtection(req, res, next);
   }
 
   next();
 }
 
+// add review
+// app.post("/products", checkLogin, csrfProtection, async (req, res) => {
 app.post("/products", checkLogin, async (req, res) => {
   try {
     let strSQL = `INSERT INTO public."Reviews" ("stars", "productId", "review", "createdAt", "updatedAt") VALUES(5, ${req.body.id}, '${req.body.review}', Now(), Now())`;
@@ -129,18 +156,11 @@ app.post("/products", checkLogin, async (req, res) => {
   res.redirect(`/products/${req.body.id}`);
 });
 
-app.delete("/reviews", async (req, res) => {
-  if (!req.session.isLoggedIn || !req.session.isAdmin) {
-    console.log(
-      "Invalid request: You don't have permission to delete a review."
-    );
-    return res.send(
-      "Invalid request: You don't have permission to delete a review."
-    );
-  }
+// xử lý delete review sử dụng phương thức delete
+app.delete("/reviews", checkLogin, csrfProtection, async (req, res) => {
   try {
-    console.log("Review deleted!");
     await models.Review.destroy({ where: { id: req.body.id } });
+    console.log("Review deleted!");
     return res.send("Review deleted!");
   } catch (error) {
     console.error(error);
@@ -148,6 +168,28 @@ app.delete("/reviews", async (req, res) => {
   }
 });
 
+// xử lý delete review sử dụng phương thức post
+// app.post("/reviews", csrfProtection, async (req, res) => {
+app.post("/reviews", async (req, res) => {
+  if (!req.session.isLoggedIn || !req.session.isAdmin) {
+    let message =
+      "Invalid request: You don't have permission to delete a review.";
+    console.log(message);
+    res.status(403);
+    return res.send(message);
+  }
+  let review = await models.Review.findByPk(req.body.id);
+  let productId = review.productId;
+  try {
+    console.log("Review deleted!");
+    await models.Review.destroy({ where: { id: req.body.id } });
+  } catch (error) {
+    console.error(error);
+  }
+  return res.redirect(`/products/${productId}`);
+});
+
+// kiểm tra đăng nhập
 app.post("/login", async (req, res) => {
   let { username, password, remember } = req.body;
   const { QueryTypes } = require("sequelize");
@@ -166,7 +208,7 @@ app.post("/login", async (req, res) => {
         });
         res.cookie("password", password, {
           maxAge: 60 * 60 * 24 * 1000,
-          httpOnly: false,
+          httpOnly: true,
         });
       }
       req.session.isLoggedIn = true;
@@ -183,24 +225,29 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// logout
 app.get("/logout", (req, res) => {
   req.session.destroy(() => {
     res.redirect("/");
   });
 });
 
+// user page
 app.get("/user", (req, res) => {
   res.render("user");
 });
 
+// admin page
 app.get("/admin", (req, res) => {
   res.render("admin");
 });
 
+// create tables
 app.get("/sync", async (req, res) => {
   models.sequelize.sync().then(() => res.send("ok"));
 });
 
+// test page
 app.get(
   "/test",
   query("email").isEmail().withMessage("Invalid email address"),
@@ -211,6 +258,17 @@ app.get(
   }
 );
 
+// error handling
+app.use((req, res) => {
+  res.status(404).send("Request NOT Found!");
+});
+
+app.use((error, req, res, next) => {
+  console.error(error);
+  res.status(500).send(`${error}`);
+});
+
+// start server
 app.listen(port, () => {
   console.log(`server is listening on port ${port}`);
 });

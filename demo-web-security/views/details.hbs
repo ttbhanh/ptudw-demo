@@ -1,51 +1,76 @@
 {{#with product}}
-  <div class="container">
-    <section class="py-0">
-      <div class="container my-5">
-        <div class="row gx-4 gx-lg-5 align-items-center">
-          <div class="col-md-4"><img
-              class="card-img-top mb-5 mb-md-0"
-              src="{{imagePath}}"
-              alt="
-                        ..."
-            /></div>
-          <div class="col-md-8">
-            <h1 class="display-5 fw-bolder">{{name}}</h1>
-            <div class="fs-5 mb-5">
-              <span class="text-decoration-line-through">${{oldPrice}}</span>
-              <span>${{price}}</span>
-            </div>
-            <p class="lead">{{description}}</p>
+<div class="container">
+  <section class="py-0">
+    <div class="container my-5">
+      <div class="row gx-4 gx-lg-5 align-items-center">
+        <div class="col-md-4"><img class="card-img-top mb-5 mb-md-0" src="{{imagePath}}" alt="
+                        ..." /></div>
+        <div class="col-md-8">
+          <h1 class="display-5 fw-bolder">{{name}}</h1>
+          <div class="fs-5 mb-5">
+            <span class="text-decoration-line-through">${{oldPrice}}</span>
+            <span>${{price}}</span>
           </div>
+          <p class="lead">{{description}}</p>
         </div>
       </div>
-    </section>
-    <h2>Reviews</h2>
-    {{#if ../isLoggedIn}}
-      <form action="/products" method="post">
-        <div class="mb-3">
-          <textarea
-            class="form-control"
-            name="review"
-            id="review"
-            rows="3"
-            placeholder="Enter your review"
-          ></textarea>
-          <button type="submit" class="btn btn-primary mt-3">Submit</button>
-          <input type="hidden" name="id" value="{{id}}" />
-          {{#if ../isAdmin}}
-            <input type="hidden" name="_csrf" value="{{../csrfToken}}" />
-          {{/if}}
-        </div>
-      </form>
-    {{/if}}
-    <ul class="list-group list-group-numbered">
-      {{#each Reviews}}
-        <li
-          class="list-group-item"
-          style="word-wrap:break-word"
-        >{{{review}}}</li>
-      {{/each}}
-    </ul>
-  </div>
+    </div>
+  </section>
+  <h2>Reviews</h2>
+  {{#if ../isLoggedIn}}
+  <form action="/products" method="post">
+    <div class="mb-3">
+      <textarea class="form-control" name="review" id="review" rows="3" placeholder="Enter your review"></textarea>
+      <button type="submit" class="btn btn-primary mt-3">Submit</button>
+      <input type="hidden" name="id" value="{{id}}" />
+      <input type="hidden" name="_csrf" id="csrf" value="{{../csrfToken}}">
+    </div>
+  </form>
+  {{/if}}
+  <ul class="list-group list-group-numbered">
+    {{#each Reviews}}
+    <li class="list-group-item" style="word-wrap:break-word">
+      {{#if ../../isAdmin}}
+      <i class="bi bi-trash-fill text-danger" onclick="deleteReview({{id}})"></i>
+      {{/if}}
+      {{{review}}}
+    </li>
+    {{/each}}
+  </ul>
+</div>
 {{/with}}
+
+<script>
+  async function deleteReview(id) {
+    if (!confirm('Do you really want to delete this review?')) {
+      return false;
+    }
+    await fetch(`/reviews`,
+      {
+        headers: {
+          'Content-type': 'application/json'
+        },
+        method: 'POST',
+        body: JSON.stringify({ id: id })
+      });
+    location.reload();
+  }
+
+  async function deleteReviewWithCsrf(id) {
+    if (!confirm('Do you really want to delete this review?')) {
+      return false;
+    }
+    let token = document.querySelector('#csrf').value;
+    await fetch(`/reviews`,
+      {
+        headers: {
+          'Content-type': 'application/json',
+          'CSRF-Token': token
+        },
+        method: 'DELETE',
+        body: JSON.stringify({ id })
+      });
+    location.reload();
+  }
+
+</script>

