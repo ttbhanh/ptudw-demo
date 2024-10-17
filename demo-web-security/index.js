@@ -66,6 +66,10 @@ app.use(
     cookie: {
       httpOnly: true,
       maxAge: 5 * 60 * 1000, // 20ph
+      // secure: true, // Chỉ sử dụng khi sử dụng HTTPS
+      sameSite: "Strict", // 'Strict' Cookie sẽ chỉ được gửi trong các yêu cầu từ cùng một site, ngăn chặn hoàn toàn các yêu cầu cross-site. Hoặc 'Lax' Cookie sẽ được gửi trong một số trường hợp như các yêu cầu GET thông thường từ các liên kết bên ngoài, nhưng vẫn bảo vệ khỏi nhiều loại tấn công CSRF.
+      domain: "localhost:3000", // xác định cookie sẽ được gửi tới miền nào, có thể là toàn bộ các subdomain hoặc một miền cụ thể.
+      // path: '/', // giới hạn cookie chỉ gửi tới các URL có đường dẫn khớp với path được chỉ định
     },
   })
 );
@@ -144,8 +148,8 @@ function checkLogin(req, res, next) {
 }
 
 // add review
-// app.post("/products", checkLogin, csrfProtection, async (req, res) => {
-app.post("/products", checkLogin, async (req, res) => {
+app.post("/products", checkLogin, csrfProtection, async (req, res) => {
+  // app.post("/products", checkLogin, async (req, res) => {
   try {
     let strSQL = `INSERT INTO public."Reviews" ("stars", "productId", "review", "createdAt", "updatedAt") VALUES(5, ${req.body.id}, '${req.body.review}', Now(), Now())`;
 
@@ -208,7 +212,11 @@ app.post("/login", async (req, res) => {
         });
         res.cookie("password", password, {
           maxAge: 60 * 60 * 24 * 1000,
-          httpOnly: true,
+          httpOnly: false,
+          // secure: true, // Chỉ sử dụng khi sử dụng HTTPS
+          sameSite: "Strict", // hoặc 'Lax'
+          domain: "localhost:3000",
+          // path: '/', // Tùy chọn thêm nếu cần
         });
       }
       req.session.isLoggedIn = true;
